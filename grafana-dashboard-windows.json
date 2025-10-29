@@ -948,7 +948,7 @@
           "mappings": [],
           "thresholds": {
             "mode": "absolute",
-            "steps": [F
+            "steps": [
               {
                 "color": "green",
                 "value": null
