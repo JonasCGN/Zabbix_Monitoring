@@ -22,6 +22,8 @@ services:
     depends_on:
       db:
         condition: service_healthy
+    ports:
+      - "10051:10051"   # <- Porta padrão do servidor Zabbix
     environment:
       DB_SERVER_HOST: db
       MYSQL_DATABASE: ${MYSQL_DATABASE}
@@ -55,7 +57,7 @@ services:
       PHP_TZ: ${PHP_TZ}
       APACHE_LISTEN_PORT: 8080
 
-  user1:
+  zabbix-agent:
     image: zabbix/zabbix-agent:7.0-alpine-latest
     restart: unless-stopped
     depends_on:
@@ -68,22 +70,19 @@ services:
       timeout: 10s
       retries: 3
 
-  user2:
-    image: zabbix/zabbix-agent:7.0-alpine-latest
+  grafana:
+    image: grafana/grafana:latest
     restart: unless-stopped
-    depends_on:
-      zabbix-server:
-        condition: service_healthy
+    ports:
+      - "3000:3000"
     environment:
-      ZBX_SERVER_HOST: zabbix-server
-    healthcheck:
-      test: ["CMD-SHELL", "zabbix_agentd -t agent.ping || exit 1"]
-      timeout: 10s
-      retries: 3
-
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+    volumes:
+      - grafana-data:/var/lib/grafana
     
 
 volumes:
   db-data:
   zbx-alertscripts:
   zbx-externalscripts:
+  grafana-data:

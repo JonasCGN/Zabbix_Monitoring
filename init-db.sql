@@ -8,3 +8,5 @@ FLUSH PRIVILEGES;
 
 -- O schema será importado automaticamente pelo container zabbix-server
 -- na primeira execução quando detectar um banco vazio
+
+zabbix_get -s 192.168.1.106 -p 10052 -k agent.ping
